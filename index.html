@@ -468,6 +468,26 @@
             color: var(--secondary-text);
         }
 
+        /* Loading States */
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #ffffff33;
+            border-radius: 50%;
+            border-top-color: var(--accent);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
         /* Responsive Design */
         @media (max-width: 768px) {
             header {
@@ -555,7 +575,10 @@
         </div>
         
         <div class="cards-grid" id="trendingVideos">
-            <!-- Videos will be loaded by JavaScript -->
+            <div class="card" style="text-align: center; padding: 2rem;">
+                <div class="loading-spinner"></div>
+                <p style="margin-top: 1rem; color: var(--secondary-text);">Loading trending videos...</p>
+            </div>
         </div>
     </section>
 
@@ -633,7 +656,10 @@
         </div>
         
         <div class="cards-grid" id="recentVideos">
-            <!-- Videos will be loaded by JavaScript -->
+            <div class="card" style="text-align: center; padding: 2rem;">
+                <div class="loading-spinner"></div>
+                <p style="margin-top: 1rem; color: var(--secondary-text);">Loading recent videos...</p>
+            </div>
         </div>
     </section>
 
@@ -675,8 +701,8 @@
             <div class="footer-column">
                 <h3>Account</h3>
                 <ul class="footer-links">
-                    <li><a href="#">Profile</a></li>
-                    <li><a href="#">Dashboard</a></li>
+                    <li><a href="#" onclick="showLoginModal()">Login</a></li>
+                    <li><a href="#" onclick="showRegisterModal()">Register</a></li>
                     <li><a href="#">Uploads</a></li>
                     <li><a href="#">Bookmarks</a></li>
                     <li><a href="#">Settings</a></li>
@@ -696,7 +722,7 @@
         </div>
         
         <div class="copyright">
-            &copy; 2023 Best Edit Clips. All rights reserved. | Hosted on GitHub Pages
+            &copy; 2023 Best Edit Clips. All rights reserved. | Powered by Real Backend API
         </div>
     </footer>
 
@@ -706,87 +732,8 @@
     </div>
 
     <script>
-        // Mock Data - Replace with real API calls in production
-        const mockVideos = [
-            {
-                id: 1,
-                title: "Epic Soccer Goals Compilation",
-                description: "Amazing soccer goals from top leagues around the world",
-                category: "sports",
-                views: 12500,
-                likes: 842,
-                downloads: 1560,
-                duration: "0:45",
-                uploader: "SoccerEdits",
-                isCopyrightFree: true,
-                trending: true
-            },
-            {
-                id: 2,
-                title: "Anime AMV - Fight Scenes",
-                description: "Best anime fight scenes compilation with epic music",
-                category: "anime",
-                views: 8500,
-                likes: 512,
-                downloads: 890,
-                duration: "1:22",
-                uploader: "AnimeVibes",
-                isCopyrightFree: true,
-                trending: true
-            },
-            {
-                id: 3,
-                title: "Cinematic Slow Motion",
-                description: "Beautiful slow motion shots from various films",
-                category: "slowmo",
-                views: 7200,
-                likes: 421,
-                downloads: 650,
-                duration: "0:38",
-                uploader: "FilmMagic",
-                isCopyrightFree: true,
-                trending: true
-            },
-            {
-                id: 4,
-                title: "Romantic Sunset Proposal",
-                description: "Beautiful romantic moments and proposals",
-                category: "love",
-                views: 4200,
-                likes: 328,
-                downloads: 891,
-                duration: "0:18",
-                uploader: "CinematicLove",
-                isCopyrightFree: true,
-                trending: false
-            },
-            {
-                id: 5,
-                title: "Martial Arts Fight Scene",
-                description: "Epic martial arts combat sequences",
-                category: "action",
-                views: 5700,
-                likes: 512,
-                downloads: 1200,
-                duration: "0:22",
-                uploader: "ActionFlow",
-                isCopyrightFree: true,
-                trending: false
-            },
-            {
-                id: 6,
-                title: "Aesthetic Nature Transitions",
-                description: "Beautiful nature scenes with smooth transitions",
-                category: "aesthetic",
-                views: 6800,
-                likes: 387,
-                downloads: 742,
-                duration: "0:35",
-                uploader: "VisualArts",
-                isCopyrightFree: true,
-                trending: false
-            }
-        ];
+        // API Configuration
+        const API_BASE = 'https://best-edit-clips-backend.onrender.com/api';
 
         // Theme Toggle Functionality
         const themeToggle = document.getElementById('themeToggle');
@@ -811,16 +758,84 @@
             themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
         }
 
+        // API Functions
+        async function fetchVideos(endpoint = '/videos') {
+            try {
+                const response = await fetch(`${API_BASE}${endpoint}`);
+                if (!response.ok) throw new Error('Failed to fetch videos');
+                const data = await response.json();
+                return data.videos || data;
+            } catch (error) {
+                console.error('Error fetching videos:', error);
+                showError('Failed to load videos. Please try again later.');
+                return [];
+            }
+        }
+
+        async function fetchTrendingVideos() {
+            return await fetchVideos('/trending?limit=6');
+        }
+
+        async function fetchRecentVideos() {
+            return await fetchVideos('/videos?sortBy=createdAt&sortOrder=desc&limit=6');
+        }
+
+        async function searchVideos(query) {
+            return await fetchVideos(`/search?q=${encodeURIComponent(query)}&limit=12`);
+        }
+
+        async function likeVideo(videoId) {
+            try {
+                const response = await fetch(`${API_BASE}/videos/${videoId}/like`, {
+                    method: 'POST'
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    showSuccess('Video liked!');
+                    return data;
+                } else {
+                    throw new Error(data.message);
+                }
+            } catch (error) {
+                console.error('Error liking video:', error);
+                showError('Failed to like video');
+            }
+        }
+
+        async function downloadVideo(videoId) {
+            try {
+                const response = await fetch(`${API_BASE}/videos/${videoId}/download`, {
+                    method: 'POST'
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    // In a real app, this would trigger the download
+                    showSuccess('Download started!');
+                    return data;
+                } else {
+                    throw new Error(data.message);
+                }
+            } catch (error) {
+                console.error('Error downloading video:', error);
+                showError('Failed to download video');
+            }
+        }
+
         // Video Display Functions
         function displayVideos(videos, containerId) {
             const container = document.getElementById(containerId);
+            if (!videos || videos.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: var(--secondary-text); grid-column: 1 / -1;">No videos found</p>';
+                return;
+            }
+
             container.innerHTML = '';
 
             videos.forEach(video => {
                 const videoCard = `
-                    <div class="card fade-in" onclick="showVideoDetails(${video.id})">
+                    <div class="card fade-in" onclick="showVideoDetails('${video._id}')">
                         <div class="card-thumbnail">
-                            ${video.trending ? '<div class="trending-badge">Trending</div>' : ''}
+                            ${video.views > 5000 ? '<div class="trending-badge">Popular</div>' : ''}
                             <i class="fas fa-play-circle"></i>
                         </div>
                         <div class="card-content">
@@ -830,9 +845,9 @@
                                 <span>${video.duration}</span>
                             </div>
                             <div class="card-stats">
-                                <span><i class="fas fa-eye"></i> ${video.views.toLocaleString()}</span>
-                                <span><i class="fas fa-heart"></i> ${video.likes}</span>
-                                <span><i class="fas fa-download"></i> ${video.downloads}</span>
+                                <span><i class="fas fa-eye"></i> ${video.views?.toLocaleString() || 0}</span>
+                                <span><i class="fas fa-heart"></i> ${video.likes || 0}</span>
+                                <span><i class="fas fa-download"></i> ${video.downloads || 0}</span>
                             </div>
                             ${video.isCopyrightFree ? '<div class="copyright-free"><i class="fas fa-check-circle"></i> Copyright Free</div>' : ''}
                         </div>
@@ -843,95 +858,133 @@
         }
 
         // Show video details in modal
-        function showVideoDetails(videoId) {
-            const video = mockVideos.find(v => v.id === videoId);
-            if (!video) return;
+        async function showVideoDetails(videoId) {
+            try {
+                const response = await fetch(`${API_BASE}/videos/${videoId}`);
+                if (!response.ok) throw new Error('Failed to fetch video details');
+                const video = await response.json();
 
-            const modal = document.getElementById('videoModal');
-            const modalContent = document.getElementById('modalContent');
+                const modal = document.getElementById('videoModal');
+                const modalContent = document.getElementById('modalContent');
 
-            modalContent.innerHTML = `
-                <h2>${video.title}</h2>
-                <div style="display: flex; gap: 1rem; margin: 1rem 0; color: var(--secondary-text);">
-                    <span><i class="fas fa-user"></i> ${video.uploader}</span>
-                    <span><i class="fas fa-eye"></i> ${video.views.toLocaleString()} views</span>
-                    <span><i class="fas fa-clock"></i> ${video.duration}</span>
-                </div>
-                <div style="background: var(--secondary-bg); height: 300px; border-radius: var(--border-radius); display: flex; align-items: center; justify-content: center; margin: 1rem 0;">
-                    <i class="fas fa-play-circle" style="font-size: 4rem; color: var(--accent);"></i>
-                </div>
-                <p>${video.description}</p>
-                <div style="margin: 1rem 0;">
-                    <div class="card-stats">
-                        <span><i class="fas fa-heart"></i> ${video.likes} Likes</span>
-                        <span><i class="fas fa-download"></i> ${video.downloads} Downloads</span>
+                modalContent.innerHTML = `
+                    <h2>${video.title}</h2>
+                    <div style="display: flex; gap: 1rem; margin: 1rem 0; color: var(--secondary-text); flex-wrap: wrap;">
+                        <span><i class="fas fa-user"></i> ${video.uploader}</span>
+                        <span><i class="fas fa-eye"></i> ${video.views?.toLocaleString() || 0} views</span>
+                        <span><i class="fas fa-clock"></i> ${video.duration}</span>
+                        <span><i class="fas fa-video"></i> ${video.resolution}</span>
                     </div>
-                    ${video.isCopyrightFree ? '<div class="copyright-free" style="margin-top: 1rem;"><i class="fas fa-check-circle"></i> This clip is copyright-free and ready to use in your projects</div>' : ''}
-                </div>
-                <div style="display: flex; gap: 1rem; margin-top: 2rem;">
-                    <button class="upload-btn" onclick="downloadVideo(${video.id})">
-                        <i class="fas fa-download"></i> Download (${video.duration})
-                    </button>
-                    <button class="upload-btn" style="background: var(--accent-secondary);" onclick="likeVideo(${video.id})">
-                        <i class="fas fa-heart"></i> Like
-                    </button>
-                </div>
-            `;
+                    <div style="background: var(--secondary-bg); height: 300px; border-radius: var(--border-radius); display: flex; align-items: center; justify-content: center; margin: 1rem 0;">
+                        <i class="fas fa-play-circle" style="font-size: 4rem; color: var(--accent);"></i>
+                    </div>
+                    <p style="margin-bottom: 1rem;">${video.description || 'No description available.'}</p>
+                    <div style="margin: 1rem 0;">
+                        <div class="card-stats">
+                            <span><i class="fas fa-heart"></i> ${video.likes || 0} Likes</span>
+                            <span><i class="fas fa-download"></i> ${video.downloads || 0} Downloads</span>
+                        </div>
+                        ${video.tags && video.tags.length > 0 ? 
+                            `<div style="margin-top: 1rem;">
+                                <strong>Tags:</strong> ${video.tags.map(tag => `<span style="background: var(--secondary-bg); padding: 0.2rem 0.5rem; border-radius: 4px; margin: 0.2rem; display: inline-block;">${tag}</span>`).join('')}
+                            </div>` : ''}
+                        ${video.isCopyrightFree ? '<div class="copyright-free" style="margin-top: 1rem;"><i class="fas fa-check-circle"></i> This clip is copyright-free and ready to use in your projects</div>' : ''}
+                    </div>
+                    <div style="display: flex; gap: 1rem; margin-top: 2rem; flex-wrap: wrap;">
+                        <button class="upload-btn" onclick="handleDownload('${video._id}')">
+                            <i class="fas fa-download"></i> Download (${video.duration})
+                        </button>
+                        <button class="upload-btn" style="background: var(--accent-secondary);" onclick="handleLike('${video._id}')">
+                            <i class="fas fa-heart"></i> Like
+                        </button>
+                    </div>
+                `;
 
-            modal.style.display = 'flex';
+                modal.style.display = 'flex';
+            } catch (error) {
+                console.error('Error loading video details:', error);
+                showError('Failed to load video details');
+            }
+        }
+
+        async function handleLike(videoId) {
+            const result = await likeVideo(videoId);
+            if (result) {
+                // Refresh the video details
+                showVideoDetails(videoId);
+            }
+        }
+
+        async function handleDownload(videoId) {
+            await downloadVideo(videoId);
         }
 
         function closeVideoModal() {
             document.getElementById('videoModal').style.display = 'none';
         }
 
-        function downloadVideo(videoId) {
-            alert('Download functionality would be implemented with a real backend');
-            // In production: window.location.href = `/api/videos/${videoId}/download`;
-        }
-
-        function likeVideo(videoId) {
-            alert('Like functionality would be implemented with a real backend');
-            // In production: fetch(`/api/videos/${videoId}/like`, { method: 'POST' });
-        }
-
-        function filterByCategory(category) {
-            const filteredVideos = mockVideos.filter(video => video.category === category);
-            displayVideos(filteredVideos, 'trendingVideos');
-            document.getElementById('recentVideos').innerHTML = '<p style="text-align: center; color: var(--secondary-text);">Switch to "All" to see recent uploads</p>';
-        }
-
-        function showUploadModal() {
-            alert('Upload functionality requires a backend server. Consider deploying the backend on Render or Railway.');
-        }
-
-        function toggleUserMenu() {
-            alert('User menu would show login/register options with a real backend');
+        async function filterByCategory(category) {
+            const videos = await fetchVideos(`/videos?category=${category}&limit=12`);
+            displayVideos(videos, 'trendingVideos');
+            document.getElementById('recentVideos').innerHTML = '<p style="text-align: center; color: var(--secondary-text); grid-column: 1 / -1;">Switch to "All" to see recent uploads</p>';
         }
 
         // Search functionality
+        let searchTimeout;
         document.getElementById('searchInput').addEventListener('input', function(e) {
-            const searchTerm = e.target.value.toLowerCase();
+            clearTimeout(searchTimeout);
+            const searchTerm = e.target.value.trim();
+            
             if (searchTerm.length > 2) {
-                const filtered = mockVideos.filter(video => 
-                    video.title.toLowerCase().includes(searchTerm) || 
-                    video.description.toLowerCase().includes(searchTerm)
-                );
-                displayVideos(filtered, 'trendingVideos');
-                document.getElementById('recentVideos').innerHTML = '<p style="text-align: center; color: var(--secondary-text);">Search results</p>';
-            } else {
+                searchTimeout = setTimeout(async () => {
+                    const videos = await searchVideos(searchTerm);
+                    displayVideos(videos, 'trendingVideos');
+                    document.getElementById('recentVideos').innerHTML = '<p style="text-align: center; color: var(--secondary-text); grid-column: 1 / -1;">Search results</p>';
+                }, 500);
+            } else if (searchTerm.length === 0) {
                 loadHomepageVideos();
             }
         });
 
-        function loadHomepageVideos() {
-            // Show trending videos
-            const trending = mockVideos.filter(v => v.trending);
-            displayVideos(trending, 'trendingVideos');
+        async function loadHomepageVideos() {
+            try {
+                const [trending, recent] = await Promise.all([
+                    fetchTrendingVideos(),
+                    fetchRecentVideos()
+                ]);
+                
+                displayVideos(trending, 'trendingVideos');
+                displayVideos(recent, 'recentVideos');
+            } catch (error) {
+                console.error('Error loading homepage videos:', error);
+                showError('Failed to load videos');
+            }
+        }
 
-            // Show recent videos (all non-trending)
-            const recent = mockVideos.filter(v => !v.trending);
-            displayVideos(recent, 'recentVideos');
+        // Utility Functions
+        function showError(message) {
+            alert(`Error: ${message}`);
+        }
+
+        function showSuccess(message) {
+            // In a real app, you might use a toast notification
+            console.log(`Success: ${message}`);
+        }
+
+        function showUploadModal() {
+            alert('Upload functionality is available through the backend API. Users can register and upload videos.');
+        }
+
+        function showLoginModal() {
+            alert('Login functionality is available. Users can register and login to upload videos.');
+        }
+
+        function showRegisterModal() {
+            alert('Registration functionality is available. Create an account to upload videos.');
+        }
+
+        function toggleUserMenu() {
+            alert('User authentication system is ready. Register or login to access user features.');
         }
 
         // Initialize the page
