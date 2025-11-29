@@ -117,10 +117,25 @@
             cursor: pointer;
             transition: var(--transition);
             position: relative;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .nav-icons button:hover {
             color: var(--accent);
+        }
+
+        .nav-icons .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
         }
 
         .upload-btn {
@@ -547,9 +562,18 @@
         </div>
         
         <div class="nav-icons">
-            <button><i class="fas fa-home"></i></button>
-            <button><i class="fas fa-compass"></i></button>
-            <button><i class="far fa-bookmark"></i></button>
+            <button aria-label="Home">
+                <i class="fas fa-home"></i>
+                <span class="sr-only">Home</span>
+            </button>
+            <button aria-label="Explore">
+                <i class="fas fa-compass"></i>
+                <span class="sr-only">Explore</span>
+            </button>
+            <button aria-label="Bookmarks">
+                <i class="far fa-bookmark"></i>
+                <span class="sr-only">Bookmarks</span>
+            </button>
             <button class="upload-btn" onclick="showUploadModal()">
                 <i class="fas fa-upload"></i> Upload
             </button>
