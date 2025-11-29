@@ -5,8 +5,54 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Best Edit Clips | Royalty-Free Video Clips</title>
     <meta name="description" content="Find royalty-free, professionally edited video clips for your projects. Download sports edits, anime AMVs, cinematic transitions and more.">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Preload critical fonts -->
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/webfonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/webfonts/fa-regular-400.woff2" as="font" type="font/woff2" crossorigin>
+    
+    <!-- Self-host Font Awesome CSS to control caching -->
     <style>
+        /* Font Awesome Icons - Critical Icons Only */
+        @font-face {
+            font-family: 'Font Awesome 6 Free';
+            font-style: normal;
+            font-weight: 900;
+            font-display: swap;
+            src: url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/webfonts/fa-solid-900.woff2') format('woff2');
+        }
+        
+        @font-face {
+            font-family: 'Font Awesome 6 Free';
+            font-style: normal;
+            font-weight: 400;
+            font-display: swap;
+            src: url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/webfonts/fa-regular-400.woff2') format('woff2');
+        }
+        
+        @font-face {
+            font-family: 'Font Awesome 6 Brands';
+            font-style: normal;
+            font-weight: 400;
+            font-display: swap;
+            src: url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/webfonts/fa-brands-400.woff2') format('woff2');
+        }
+        
+        .fas, .fa-solid {
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+        }
+        
+        .far, .fa-regular {
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 400;
+        }
+        
+        .fab, .fa-brands {
+            font-family: 'Font Awesome 6 Brands';
+            font-weight: 400;
+        }
+        
+        /* Critical CSS - Rest of your styles */
         :root {
             --primary-bg: #0f0f0f;
             --secondary-bg: #1a1a1a;
