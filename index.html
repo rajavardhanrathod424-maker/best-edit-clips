@@ -19,12 +19,25 @@
             src: url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/webfonts/fa-solid-900.woff2') format('woff2');
         }
         
+        @font-face {
+            font-family: 'Font Awesome 6 Free';
+            font-style: normal;
+            font-weight: 400;
+            font-display: swap;
+            src: url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/webfonts/fa-regular-400.woff2') format('woff2');
+        }
+        
         .fas, .fa-solid {
             font-family: 'Font Awesome 6 Free';
             font-weight: 900;
         }
+        
+        .far, .fa-regular {
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 400;
+        }
 
-        /* Your existing CSS styles here */
+        /* CSS Variables */
         :root {
             --primary-bg: #0f0f0f;
             --secondary-bg: #1a1a1a;
@@ -38,8 +51,485 @@
             --transition: all 0.3s ease;
         }
 
-        /* ... (include ALL your existing CSS styles) ... */
-        
+        .light-mode {
+            --primary-bg: #ffffff;
+            --secondary-bg: #f5f5f5;
+            --surface: #e9e9e9;
+            --primary-text: #0f0f0f;
+            --secondary-text: #5a5a5a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background-color: var(--primary-bg);
+            color: var(--primary-text);
+            transition: var(--transition);
+            overflow-x: hidden;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: var(--secondary-bg);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--accent), var(--accent-secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .logo i {
+            font-size: 1.5rem;
+        }
+
+        .search-bar {
+            flex: 1;
+            max-width: 600px;
+            margin: 0 2rem;
+            position: relative;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 0.8rem 1rem 0.8rem 2.5rem;
+            border-radius: 50px;
+            border: none;
+            background-color: var(--surface);
+            color: var(--primary-text);
+            font-size: 1rem;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .search-bar input:focus {
+            box-shadow: 0 0 0 2px var(--accent);
+        }
+
+        .search-bar i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--secondary-text);
+        }
+
+        .nav-icons {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .nav-icons button {
+            background: none;
+            border: none;
+            color: var(--primary-text);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-icons button:hover {
+            color: var(--accent);
+        }
+
+        .nav-icons .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        .upload-btn {
+            background: linear-gradient(90deg, var(--accent), var(--accent-secondary));
+            color: var(--primary-bg);
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .upload-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 255, 204, 0.3);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent), var(--accent-secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 70vh;
+            background: linear-gradient(rgba(15, 15, 15, 0.8), rgba(15, 15, 15, 0.9));
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 2rem;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(90deg, var(--accent), var(--accent-secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin-bottom: 2rem;
+            color: var(--secondary-text);
+        }
+
+        .hero-search {
+            width: 100%;
+            max-width: 600px;
+            position: relative;
+        }
+
+        .hero-search input {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem;
+            border-radius: 50px;
+            border: none;
+            background-color: var(--surface);
+            color: var(--primary-text);
+            font-size: 1.1rem;
+            outline: none;
+        }
+
+        .hero-search i {
+            position: absolute;
+            left: 1.2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--secondary-text);
+            font-size: 1.2rem;
+        }
+
+        /* Sections */
+        .section {
+            padding: 4rem 2rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .view-all {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: var(--transition);
+        }
+
+        .view-all:hover {
+            gap: 1rem;
+        }
+
+        /* Cards Grid */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .card {
+            background-color: var(--surface);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-thumbnail {
+            height: 180px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-secondary));
+            position: relative;
+        }
+
+        .card-thumbnail i {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2.5rem;
+            color: white;
+            opacity: 0.8;
+        }
+
+        .trending-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: var(--accent-secondary);
+            color: white;
+            padding: 0.3rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .card-content {
+            padding: 1rem;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-meta {
+            display: flex;
+            justify-content: space-between;
+            color: var(--secondary-text);
+            font-size: 0.9rem;
+        }
+
+        .card-stats {
+            display: flex;
+            gap: 1rem;
+            color: var(--secondary-text);
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+        }
+
+        .card-stats span {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .copyright-free {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--success);
+            font-size: 0.8rem;
+            margin-top: 0.8rem;
+        }
+
+        /* Categories Grid */
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .category-card {
+            background-color: var(--surface);
+            border-radius: var(--border-radius);
+            padding: 2rem 1.5rem;
+            text-align: center;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .category-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            background: linear-gradient(135deg, var(--surface), var(--accent));
+        }
+
+        .category-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--accent);
+        }
+
+        .category-card:hover .category-icon {
+            color: var(--primary-text);
+        }
+
+        .category-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--secondary-bg);
+            padding: 3rem 2rem 1.5rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-column h3 {
+            font-size: 1.2rem;
+            margin-bottom: 1.2rem;
+            color: var(--accent);
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-links a {
+            color: var(--secondary-text);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer-links a:hover {
+            color: var(--accent);
+            padding-left: 5px;
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--surface);
+            color: var(--secondary-text);
+            font-size: 0.9rem;
+        }
+
+        /* Video Modal */
+        .video-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: var(--surface);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            max-width: 800px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .close-modal {
+            float: right;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--secondary-text);
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--surface);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            z-index: 100;
+            transition: var(--transition);
+        }
+
+        .theme-toggle:hover {
+            transform: rotate(30deg);
+            background-color: var(--accent);
+            color: var(--primary-bg);
+        }
+
+        /* Loading States */
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #ffffff33;
+            border-radius: 50%;
+            border-top-color: var(--accent);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Debug Info */
         .debug-info {
             background: #ff4444;
             color: white;
@@ -50,7 +540,52 @@
             right: 0;
             z-index: 10000;
             font-family: monospace;
+            text-align: center;
         }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            header {
+                padding: 1rem;
+                flex-wrap: wrap;
+            }
+            
+            .search-bar {
+                order: 3;
+                margin: 1rem 0 0;
+                max-width: 100%;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .section {
+                padding: 2rem 1rem;
+            }
+            
+            .categories-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+            
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.8s ease forwards;
+        }
+
+        .delay-1 { animation-delay: 0.2s; }
+        .delay-2 { animation-delay: 0.4s; }
+        .delay-3 { animation-delay: 0.6s; }
     </style>
 </head>
 <body>
@@ -59,7 +594,7 @@
         <strong>Debug Info:</strong> <span id="debugText">Checking connection...</span>
     </div>
 
-    <!-- Your existing HTML structure -->
+    <!-- Header -->
     <header>
         <a href="#" class="logo">
             <i class="fas fa-film"></i>
@@ -116,6 +651,44 @@
         </div>
     </section>
 
+    <!-- Categories Section -->
+    <section class="section">
+        <div class="section-header">
+            <h2 class="section-title"><i class="fas fa-th-large"></i> Explore by Category</h2>
+            <a href="#" class="view-all">View All <i class="fas fa-arrow-right"></i></a>
+        </div>
+        
+        <div class="categories-grid">
+            <div class="category-card fade-in" onclick="filterByCategory('sports')">
+                <div class="category-icon">
+                    <i class="fas fa-basketball-ball"></i>
+                </div>
+                <h3 class="category-title">Sports Edits</h3>
+            </div>
+            
+            <div class="category-card fade-in delay-1" onclick="filterByCategory('anime')">
+                <div class="category-icon">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <h3 class="category-title">Anime Edits</h3>
+            </div>
+            
+            <div class="category-card fade-in delay-2" onclick="filterByCategory('movie')">
+                <div class="category-icon">
+                    <i class="fas fa-film"></i>
+                </div>
+                <h3 class="category-title">Movie Edits</h3>
+            </div>
+            
+            <div class="category-card fade-in delay-3" onclick="filterByCategory('slowmo')">
+                <div class="category-icon">
+                    <i class="fas fa-hourglass-half"></i>
+                </div>
+                <h3 class="category-title">Slow-Mo Edits</h3>
+            </div>
+        </div>
+    </section>
+
     <!-- Recent Uploads Section -->
     <section class="section">
         <div class="section-header">
@@ -131,14 +704,61 @@
         </div>
     </section>
 
-    <!-- Rest of your HTML remains the same -->
+    <!-- Video Modal -->
+    <div class="video-modal" id="videoModal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeVideoModal()">&times;</span>
+            <div id="modalContent">
+                <!-- Video details will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-column">
+                <h3>Best Edit Clips</h3>
+                <p style="color: var(--secondary-text); margin-bottom: 1rem;">Your premier source for royalty-free, professionally edited video clips.</p>
+            </div>
+            
+            <div class="footer-column">
+                <h3>Explore</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Categories</a></li>
+                    <li><a href="#">Trending</a></li>
+                    <li><a href="#">Recent Uploads</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h3>Account</h3>
+                <ul class="footer-links">
+                    <li><a href="#" onclick="showLoginModal()">Login</a></li>
+                    <li><a href="#" onclick="showRegisterModal()">Register</a></li>
+                    <li><a href="#">Uploads</a></li>
+                    <li><a href="#">Bookmarks</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="copyright">
+            &copy; 2023 Best Edit Clips. All rights reserved.
+        </div>
+    </footer>
+
+    <!-- Theme Toggle -->
+    <div class="theme-toggle" id="themeToggle">
+        <i class="fas fa-moon"></i>
+    </div>
 
     <script>
-        // Enhanced API Configuration with Fallbacks
+        // API Configuration
         const API_BASE = 'https://best-edit-clips-backend.onrender.com/api';
         let isBackendOnline = false;
 
-        // Debug function to show connection status
+        // Debug function
         function showDebugInfo(message, isError = false) {
             const debugDiv = document.getElementById('debugInfo');
             const debugText = document.getElementById('debugText');
@@ -150,102 +770,101 @@
             console.log(`DEBUG: ${message}`);
         }
 
-        // Test backend connection on page load
+        // Test backend connection
         async function testBackendConnection() {
             try {
                 showDebugInfo('Testing backend connection...');
-                
                 const response = await fetch(`${API_BASE}/health`);
                 
                 if (response.ok) {
-                    const data = await response.json();
                     isBackendOnline = true;
-                    showDebugInfo(`✅ Backend connected: ${data.message || 'Healthy'}`);
+                    showDebugInfo('✅ Backend connected successfully!');
                     return true;
                 } else {
-                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    throw new Error(`HTTP ${response.status}`);
                 }
             } catch (error) {
                 isBackendOnline = false;
-                showDebugInfo(`❌ Backend offline: ${error.message}`, true);
+                showDebugInfo('❌ Backend offline - Using demo data', true);
                 return false;
             }
         }
 
-        // Enhanced API Functions with Fallbacks
+        // Fetch videos from API
         async function fetchVideos(endpoint = '/videos') {
             if (!isBackendOnline) {
-                showDebugInfo('Using fallback data - Backend offline', true);
                 return getFallbackVideos();
             }
 
             try {
-                console.log(`🔍 Fetching from: ${API_BASE}${endpoint}`);
+                console.log(`🔍 Fetching: ${API_BASE}${endpoint}`);
                 const response = await fetch(`${API_BASE}${endpoint}`);
                 
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}`);
-                }
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 
                 const data = await response.json();
                 console.log('✅ API Response:', data);
-                return data.videos || data;
+                
+                // Handle different response structures
+                if (data.videos) return data.videos;
+                if (Array.isArray(data)) return data;
+                return [];
+                
             } catch (error) {
                 console.error('❌ API Error:', error);
-                showDebugInfo(`API Error: ${error.message} - Using fallback data`, true);
                 return getFallbackVideos();
             }
         }
 
-        // Fallback data when backend is offline
+        // Get trending videos
+        async function fetchTrendingVideos() {
+            return await fetchVideos('/trending?limit=6');
+        }
+
+        // Get recent videos
+        async function fetchRecentVideos() {
+            return await fetchVideos('/recent?limit=6');
+        }
+
+        // Search videos
+        async function searchVideos(query) {
+            return await fetchVideos(`/search?q=${encodeURIComponent(query)}&limit=12`);
+        }
+
+        // Fallback data
         function getFallbackVideos() {
             return [
                 {
                     _id: 'fallback-1',
-                    title: 'Epic Football Goal Edit',
-                    uploader: 'SportsEdits',
-                    duration: '0:15',
+                    title: "Demo: Epic Soccer Goals",
+                    duration: "0:45",
+                    category: "sports",
+                    uploader: "SoccerEdits",
                     views: 12500,
-                    likes: 890,
-                    downloads: 450,
+                    likes: 842,
+                    downloads: 1560,
                     isCopyrightFree: true
                 },
                 {
-                    _id: 'fallback-2', 
-                    title: 'Anime AMV - Action Packed',
-                    uploader: 'AnimeMaster',
-                    duration: '0:30',
-                    views: 8900,
-                    likes: 670,
-                    downloads: 320,
-                    isCopyrightFree: true
-                },
-                {
-                    _id: 'fallback-3',
-                    title: 'Cinematic Transition Pack',
-                    uploader: 'CinePro',
-                    duration: '0:45',
-                    views: 15600,
-                    likes: 1200,
-                    downloads: 780,
+                    _id: 'fallback-2',
+                    title: "Demo: Anime Fight Scenes", 
+                    duration: "1:22",
+                    category: "anime",
+                    uploader: "AnimeVibes",
+                    views: 8500,
+                    likes: 512,
+                    downloads: 890,
                     isCopyrightFree: true
                 }
             ];
         }
 
-        // Enhanced video display with debugging
+        // Display videos
         function displayVideos(videos, containerId) {
             const container = document.getElementById(containerId);
             
             if (!videos || videos.length === 0) {
-                container.innerHTML = `
-                    <div class="card" style="text-align: center; padding: 2rem; grid-column: 1 / -1;">
-                        <p style="color: var(--secondary-text);">No videos found</p>
-                        <p style="color: var(--accent-secondary); font-size: 0.8rem; margin-top: 0.5rem;">
-                            Backend Status: ${isBackendOnline ? 'Connected' : 'Offline'}
-                        </p>
-                    </div>
-                `;
+                container.innerHTML = '<p style="text-align: center; color: var(--secondary-text); grid-column: 1 / -1;">No videos found</p>';
                 return;
             }
 
@@ -280,17 +899,163 @@
             });
         }
 
-        // Enhanced initialization
+        // Load homepage videos
+        async function loadHomepageVideos() {
+            try {
+                const [trending, recent] = await Promise.all([
+                    fetchTrendingVideos(),
+                    fetchRecentVideos()
+                ]);
+                
+                displayVideos(trending, 'trendingVideos');
+                displayVideos(recent, 'recentVideos');
+                
+                showDebugInfo(`✅ Loaded ${trending.length} trending + ${recent.length} recent videos`);
+            } catch (error) {
+                console.error('Error loading videos:', error);
+            }
+        }
+
+        // Video details modal
+        async function showVideoDetails(videoId) {
+            if (videoId.includes('fallback')) {
+                alert('This is demo data. Backend is currently offline.');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}/videos/${videoId}`);
+                if (!response.ok) throw new Error('Failed to load video');
+                
+                const video = await response.json();
+                const modal = document.getElementById('videoModal');
+                const modalContent = document.getElementById('modalContent');
+
+                modalContent.innerHTML = `
+                    <h2>${video.title}</h2>
+                    <div style="display: flex; gap: 1rem; margin: 1rem 0; color: var(--secondary-text); flex-wrap: wrap;">
+                        <span><i class="fas fa-user"></i> ${video.uploader}</span>
+                        <span><i class="fas fa-eye"></i> ${(video.views || 0).toLocaleString()} views</span>
+                        <span><i class="fas fa-clock"></i> ${video.duration}</span>
+                        <span><i class="fas fa-tag"></i> ${video.category}</span>
+                    </div>
+                    <div style="background: var(--secondary-bg); height: 300px; border-radius: var(--border-radius); display: flex; align-items: center; justify-content: center; margin: 1rem 0;">
+                        <i class="fas fa-play-circle" style="font-size: 4rem; color: var(--accent);"></i>
+                    </div>
+                    <p style="margin-bottom: 1rem;">${video.description || 'No description available.'}</p>
+                    <div style="margin: 1rem 0;">
+                        <div class="card-stats">
+                            <span><i class="fas fa-heart"></i> ${video.likes || 0} Likes</span>
+                            <span><i class="fas fa-download"></i> ${video.downloads || 0} Downloads</span>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 1rem; margin-top: 2rem; flex-wrap: wrap;">
+                        <button class="upload-btn" onclick="handleDownload('${video._id}')">
+                            <i class="fas fa-download"></i> Download
+                        </button>
+                        <button class="upload-btn" style="background: var(--accent-secondary);" onclick="handleLike('${video._id}')">
+                            <i class="fas fa-heart"></i> Like
+                        </button>
+                    </div>
+                `;
+
+                modal.style.display = 'flex';
+            } catch (error) {
+                console.error('Error loading video details:', error);
+                alert('Failed to load video details');
+            }
+        }
+
+        function closeVideoModal() {
+            document.getElementById('videoModal').style.display = 'none';
+        }
+
+        // Handle like functionality
+        async function handleLike(videoId) {
+            try {
+                const response = await fetch(`${API_BASE}/videos/${videoId}/like`, { method: 'POST' });
+                const data = await response.json();
+                if (response.ok) {
+                    alert('Video liked!');
+                    showVideoDetails(videoId);
+                }
+            } catch (error) {
+                alert('Like functionality works when backend is connected');
+            }
+        }
+
+        // Handle download functionality
+        async function handleDownload(videoId) {
+            try {
+                const response = await fetch(`${API_BASE}/videos/${videoId}/download`, { method: 'POST' });
+                const data = await response.json();
+                if (response.ok) {
+                    alert('Download started!');
+                showVideoDetails(videoId);
+                }
+            } catch (error) {
+                alert('Download functionality works when backend is connected');
+            }
+        }
+
+        // Search functionality
+        let searchTimeout;
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            clearTimeout(searchTimeout);
+            const searchTerm = e.target.value.trim();
+            
+            if (searchTerm.length > 2) {
+                searchTimeout = setTimeout(async () => {
+                    const videos = await searchVideos(searchTerm);
+                    displayVideos(videos, 'trendingVideos');
+                    document.getElementById('recentVideos').innerHTML = '<p style="text-align: center; color: var(--secondary-text); grid-column: 1 / -1;">Search results</p>';
+                }, 500);
+            } else if (searchTerm.length === 0) {
+                loadHomepageVideos();
+            }
+        });
+
+        // Category filter
+        async function filterByCategory(category) {
+            const videos = await fetchVideos(`/videos?category=${category}&limit=12`);
+            displayVideos(videos, 'trendingVideos');
+            document.getElementById('recentVideos').innerHTML = '<p style="text-align: center; color: var(--secondary-text); grid-column: 1 / -1;">Switch to "All" to see recent uploads</p>';
+        }
+
+        // Theme toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        
+        if (themeToggle) {
+            themeToggle.addEventListener('click', () => {
+                body.classList.toggle('light-mode');
+                if (body.classList.contains('light-mode')) {
+                    themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+                    localStorage.setItem('theme', 'light');
+                } else {
+                    themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+                    localStorage.setItem('theme', 'dark');
+                }
+            });
+
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'light') {
+                body.classList.add('light-mode');
+                themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+            }
+        }
+
+        // Utility functions
+        function showUploadModal() { alert('Upload available when logged in'); }
+        function showLoginModal() { alert('Login available when backend connected'); }
+        function showRegisterModal() { alert('Register available when backend connected'); }
+        function toggleUserMenu() { alert('User menu available when logged in'); }
+
+        // Initialize app
         async function initializeApp() {
-            showDebugInfo('Initializing application...');
-            
-            // Test backend first
             await testBackendConnection();
-            
-            // Load videos
             await loadHomepageVideos();
             
-            // Hide debug after 5 seconds if successful
             if (isBackendOnline) {
                 setTimeout(() => {
                     document.getElementById('debugInfo').style.display = 'none';
@@ -298,31 +1063,33 @@
             }
         }
 
-        // Your existing functions remain the same but enhanced
-        async function loadHomepageVideos() {
-            try {
-                showDebugInfo('Loading videos from database...');
-                
-                const trending = await fetchVideos('/trending?limit=6');
-                const recent = await fetchVideos('/videos?sortBy=createdAt&sortOrder=desc&limit=6');
-                
-                displayVideos(trending, 'trendingVideos');
-                displayVideos(recent, 'recentVideos');
-                
-                showDebugInfo(`✅ Loaded ${trending.length} trending + ${recent.length} recent videos`);
-            } catch (error) {
-                console.error('Error loading homepage videos:', error);
-                showDebugInfo('Error loading videos', true);
-            }
-        }
-
-        // Rest of your existing JavaScript functions...
-        // (keep all your existing search, modal, like/download functions)
-
         // Initialize when page loads
         document.addEventListener('DOMContentLoaded', function() {
             initializeApp();
+            
+            // Close modal when clicking outside
+            document.getElementById('videoModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeVideoModal();
+                }
+            });
         });
+
+        // Fade-in animation on scroll
+        const fadeElements = document.querySelectorAll('.fade-in');
+        const fadeInOnScroll = () => {
+            fadeElements.forEach(element => {
+                const elementTop = element.getBoundingClientRect().top;
+                const elementVisible = 150;
+                if (elementTop < window.innerHeight - elementVisible) {
+                    element.style.opacity = 1;
+                    element.style.transform = 'translateY(0)';
+                }
+            });
+        };
+        
+        window.addEventListener('load', fadeInOnScroll);
+        window.addEventListener('scroll', fadeInOnScroll);
     </script>
 </body>
 </html>
