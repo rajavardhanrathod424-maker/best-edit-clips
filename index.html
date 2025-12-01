@@ -553,20 +553,6 @@
             to { transform: rotate(360deg); }
         }
 
-        /* Debug Info */
-        .debug-info {
-            background: #ff4444;
-            color: white;
-            padding: 10px;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 10000;
-            font-family: monospace;
-            text-align: center;
-        }
-
         /* Responsive Design */
         @media (max-width: 768px) {
             header {
@@ -779,8 +765,8 @@
     </div>
 
     <script>
-        // API Configuration - FIXED FOR LOCAL DEVELOPMENT
-        const API_BASE = 'http://localhost:5000/api';
+        // API Configuration - UPDATED FOR PRODUCTION
+        const API_BASE = 'https://best-edit-clips-backend.onrender.com/api';
         let isBackendOnline = false;
 
         // Set backend status
@@ -802,11 +788,11 @@
         // Test backend connection with timeout
         async function testBackendConnection() {
             try {
-                showDebugInfo('Testing backend connection...');
+                console.log('Testing backend connection...');
                 
                 // Add timeout to prevent hanging
                 const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 5000);
+                const timeoutId = setTimeout(() => controller.abort(), 8000);
                 
                 const response = await fetch(`${API_BASE}/health`, {
                     signal: controller.signal
@@ -826,10 +812,10 @@
                 isBackendOnline = false;
                 if (error.name === 'AbortError') {
                     setBackendStatus(false, 'Backend timeout - Using demo data');
-                    showDebugInfo('Backend timeout - Using demo data', true);
+                    console.log('Backend timeout - Using demo data');
                 } else {
                     setBackendStatus(false, `Backend offline - Using demo data`);
-                    showDebugInfo(`Backend offline: ${error.message} - Using demo data`, true);
+                    console.log(`Backend offline: ${error.message} - Using demo data`);
                 }
                 return false;
             }
@@ -846,7 +832,7 @@
                 console.log(`🔍 Fetching: ${API_BASE}${endpoint}`);
                 
                 const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 8000);
+                const timeoutId = setTimeout(() => controller.abort(), 10000);
                 
                 const response = await fetch(`${API_BASE}${endpoint}`, {
                     signal: controller.signal
@@ -1101,11 +1087,6 @@
                 body.classList.add('light-mode');
                 themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
             }
-        }
-
-        // Debug function
-        function showDebugInfo(message, isError = false) {
-            console.log(`DEBUG: ${message}`);
         }
 
         // Utility functions
