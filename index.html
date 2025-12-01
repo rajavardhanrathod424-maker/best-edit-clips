@@ -256,6 +256,30 @@
             font-size: 1.2rem;
         }
 
+        /* Status Indicator */
+        .status-indicator {
+            background: var(--surface);
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin: 15px auto;
+            max-width: 1200px;
+            text-align: center;
+            font-size: 0.9rem;
+            border-left: 4px solid #ff4444;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .status-indicator.online {
+            border-left-color: var(--success);
+        }
+
+        .status-indicator.offline {
+            border-left-color: #ff4444;
+        }
+
         /* Sections */
         .section {
             padding: 4rem 2rem;
@@ -589,9 +613,10 @@
     </style>
 </head>
 <body>
-    <!-- Debug Info Panel -->
-    <div id="debugInfo" class="debug-info" style="display: none;">
-        <strong>Debug Info:</strong> <span id="debugText">Checking connection...</span>
+    <!-- Status Indicator -->
+    <div id="statusIndicator" class="status-indicator">
+        <div class="loading-spinner"></div>
+        <span id="statusText">Connecting to backend...</span>
     </div>
 
     <!-- Header -->
@@ -646,7 +671,7 @@
         <div class="cards-grid" id="trendingVideos">
             <div class="card" style="text-align: center; padding: 2rem;">
                 <div class="loading-spinner"></div>
-                <p style="margin-top: 1rem; color: var(--secondary-text);">Connecting to database...</p>
+                <p style="margin-top: 1rem; color: var(--secondary-text);">Loading trending videos...</p>
             </div>
         </div>
     </section>
@@ -754,53 +779,84 @@
     </div>
 
     <script>
-        // API Configuration
-        const API_BASE = 'https://best-edit-clips-backend.onrender.com/api';
+        // API Configuration - FIXED FOR LOCAL DEVELOPMENT
+        const API_BASE = 'http://localhost:5000/api';
         let isBackendOnline = false;
 
-        // Debug function
-        function showDebugInfo(message, isError = false) {
-            const debugDiv = document.getElementById('debugInfo');
-            const debugText = document.getElementById('debugText');
+        // Set backend status
+        function setBackendStatus(online, message) {
+            const indicator = document.getElementById('statusIndicator');
+            const statusText = document.getElementById('statusText');
             
-            debugText.textContent = message;
-            debugDiv.style.display = 'block';
-            debugDiv.style.background = isError ? '#ff4444' : '#00cc00';
-            
-            console.log(`DEBUG: ${message}`);
+            if (online) {
+                indicator.classList.remove('offline');
+                indicator.classList.add('online');
+                statusText.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
+            } else {
+                indicator.classList.remove('online');
+                indicator.classList.add('offline');
+                statusText.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${message}`;
+            }
         }
 
-        // Test backend connection
+        // Test backend connection with timeout
         async function testBackendConnection() {
             try {
                 showDebugInfo('Testing backend connection...');
-                const response = await fetch(`${API_BASE}/health`);
+                
+                // Add timeout to prevent hanging
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 5000);
+                
+                const response = await fetch(`${API_BASE}/health`, {
+                    signal: controller.signal
+                });
+                
+                clearTimeout(timeoutId);
                 
                 if (response.ok) {
+                    const data = await response.json();
                     isBackendOnline = true;
-                    showDebugInfo('✅ Backend connected successfully!');
+                    setBackendStatus(true, `Backend Connected: ${data.message}`);
                     return true;
                 } else {
                     throw new Error(`HTTP ${response.status}`);
                 }
             } catch (error) {
                 isBackendOnline = false;
-                showDebugInfo('❌ Backend offline - Using demo data', true);
+                if (error.name === 'AbortError') {
+                    setBackendStatus(false, 'Backend timeout - Using demo data');
+                    showDebugInfo('Backend timeout - Using demo data', true);
+                } else {
+                    setBackendStatus(false, `Backend offline - Using demo data`);
+                    showDebugInfo(`Backend offline: ${error.message} - Using demo data`, true);
+                }
                 return false;
             }
         }
 
-        // Fetch videos from API
+        // Fetch videos with timeout
         async function fetchVideos(endpoint = '/videos') {
             if (!isBackendOnline) {
+                console.log('📦 Using fallback data');
                 return getFallbackVideos();
             }
 
             try {
                 console.log(`🔍 Fetching: ${API_BASE}${endpoint}`);
-                const response = await fetch(`${API_BASE}${endpoint}`);
                 
-                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 8000);
+                
+                const response = await fetch(`${API_BASE}${endpoint}`, {
+                    signal: controller.signal
+                });
+                
+                clearTimeout(timeoutId);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
                 
                 const data = await response.json();
                 console.log('✅ API Response:', data);
@@ -812,6 +868,9 @@
                 
             } catch (error) {
                 console.error('❌ API Error:', error);
+                if (error.name === 'AbortError') {
+                    setBackendStatus(false, 'API request timeout - Using demo data');
+                }
                 return getFallbackVideos();
             }
         }
@@ -910,7 +969,6 @@
                 displayVideos(trending, 'trendingVideos');
                 displayVideos(recent, 'recentVideos');
                 
-                showDebugInfo(`✅ Loaded ${trending.length} trending + ${recent.length} recent videos`);
             } catch (error) {
                 console.error('Error loading videos:', error);
             }
@@ -1045,6 +1103,11 @@
             }
         }
 
+        // Debug function
+        function showDebugInfo(message, isError = false) {
+            console.log(`DEBUG: ${message}`);
+        }
+
         // Utility functions
         function showUploadModal() { alert('Upload available when logged in'); }
         function showLoginModal() { alert('Login available when backend connected'); }
@@ -1055,12 +1118,6 @@
         async function initializeApp() {
             await testBackendConnection();
             await loadHomepageVideos();
-            
-            if (isBackendOnline) {
-                setTimeout(() => {
-                    document.getElementById('debugInfo').style.display = 'none';
-                }, 5000);
-            }
         }
 
         // Initialize when page loads
